@@ -106,6 +106,13 @@ const useAIChatStreamHandler = () => {
       if (typeof input === 'string') {
         formData.append('message', input)
       }
+      const rawMessage = formData.get('message')
+      const messageText =
+        typeof rawMessage === 'string'
+          ? rawMessage
+          : rawMessage
+            ? String(rawMessage)
+            : ''
 
       setMessages((prevMessages) => {
         if (prevMessages.length >= 2) {
@@ -124,7 +131,7 @@ const useAIChatStreamHandler = () => {
 
       addMessage({
         role: 'user',
-        content: formData.get('message') as string,
+        content: messageText,
         created_at: Math.floor(Date.now() / 1000)
       })
 
@@ -199,7 +206,7 @@ const useAIChatStreamHandler = () => {
               ) {
                 const sessionData = {
                   session_id: chunk.session_id as string,
-                  session_name: formData.get('message') as string,
+                  session_name: messageText,
                   created_at: chunk.created_at
                 }
                 setSessionsData((prevSessionsData) => {
