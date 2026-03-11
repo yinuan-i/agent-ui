@@ -15,20 +15,24 @@ import { toast } from 'sonner'
 import { useQueryState } from 'nuqs'
 import { truncateText } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
+import LanguageToggle from './LanguageToggle'
+import { useLocale } from '@/i18n/LocaleProvider'
 
-const ENDPOINT_PLACEHOLDER = 'NO ENDPOINT ADDED'
-const SidebarHeader = () => (
-  <div className="flex items-center gap-2">
-    <img
-      src="/favicon.ico"
-      alt="Agent UI"
-      className="h-4 w-4 rounded-sm"
-    />
-    <span className="text-xs font-medium uppercase text-primary">
-      Agent UI
-    </span>
-  </div>
-)
+const SidebarHeader = () => {
+  const { t } = useLocale()
+  return (
+    <div className="flex items-center gap-2">
+      <img
+        src="/favicon.ico"
+        alt={t('app.title')}
+        className="h-4 w-4 rounded-sm"
+      />
+      <span className="text-xs font-medium uppercase text-primary">
+        {t('app.title')}
+      </span>
+    </div>
+  )
+}
 
 const NewChatButton = ({
   disabled,
@@ -36,17 +40,20 @@ const NewChatButton = ({
 }: {
   disabled: boolean
   onClick: () => void
-}) => (
-  <Button
-    onClick={onClick}
-    disabled={disabled}
-    size="lg"
-    className="h-9 w-full rounded-xl border border-border bg-background text-xs font-medium text-primary shadow-none hover:bg-surface-hover"
-  >
-    <Icon type="plus-icon" size="xs" className="text-primary" />
-    <span className="uppercase">New Chat</span>
-  </Button>
-)
+}) => {
+  const { t } = useLocale()
+  return (
+    <Button
+      onClick={onClick}
+      disabled={disabled}
+      size="lg"
+      className="h-9 w-full rounded-xl border border-border bg-background text-xs font-medium text-primary shadow-none hover:bg-surface-hover"
+    >
+      <Icon type="plus-icon" size="xs" className="text-primary" />
+      <span className="uppercase">{t('sidebar.new_chat')}</span>
+    </Button>
+  )
+}
 
 const ModelDisplay = ({ model }: { model: string }) => (
   <div className="flex h-9 w-full items-center gap-3 rounded-xl border border-border bg-background p-3 text-xs font-medium uppercase text-secondary">
@@ -59,6 +66,7 @@ const ModelDisplay = ({ model }: { model: string }) => (
 )
 
 const Endpoint = () => {
+  const { t } = useLocale()
   const {
     selectedEndpoint,
     isEndpointActive,
@@ -86,7 +94,7 @@ const Endpoint = () => {
 
   const handleSave = async () => {
     if (!isValidUrl(endpointValue)) {
-      toast.error('Please enter a valid URL')
+      toast.error(t('sidebar.invalid_url'))
       return
     }
     const cleanEndpoint = endpointValue.replace(/\/$/, '').trim()
@@ -122,7 +130,9 @@ const Endpoint = () => {
 
   return (
     <div className="flex flex-col items-start gap-2">
-      <div className="text-xs font-medium uppercase text-primary">AgentOS</div>
+      <div className="text-xs font-medium uppercase text-primary">
+        {t('sidebar.agentos')}
+      </div>
       {isEditing ? (
         <div className="flex w-full items-center gap-1">
           <input
@@ -162,7 +172,7 @@ const Endpoint = () => {
                   transition={{ duration: 0.2 }}
                 >
                   <p className="flex items-center gap-2 whitespace-nowrap text-xs font-medium text-primary">
-                    <Icon type="edit" size="xxs" /> EDIT AGENTOS
+                    <Icon type="edit" size="xxs" /> {t('sidebar.edit_agentos')}
                   </p>
                 </motion.div>
               ) : (
@@ -177,7 +187,7 @@ const Endpoint = () => {
                   <p className="text-xs font-medium text-muted">
                     {isMounted
                       ? truncateText(selectedEndpoint, 21) ||
-                        ENDPOINT_PLACEHOLDER
+                        t('sidebar.endpoint_placeholder')
                       : 'http://localhost:7777'}
                   </p>
                   <div
@@ -214,6 +224,7 @@ const Sidebar = ({
   hasEnvToken?: boolean
   envToken?: string
 }) => {
+  const { t } = useLocale()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { clearChat, focusChatInput, initialize } = useChatActions()
   const {
@@ -250,7 +261,9 @@ const Sidebar = ({
       <motion.button
         onClick={() => setIsCollapsed(!isCollapsed)}
         className="absolute right-2 top-2 z-10 p-1"
-        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        aria-label={
+          isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')
+        }
         type="button"
         whileTap={{ scale: 0.95 }}
       >
@@ -270,6 +283,7 @@ const Sidebar = ({
         }}
       >
         <SidebarHeader />
+        <LanguageToggle />
         <NewChatButton
           disabled={messages.length === 0}
           onClick={handleNewChat}
@@ -287,7 +301,7 @@ const Sidebar = ({
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
                 >
                   <div className="text-xs font-medium uppercase text-primary">
-                    Mode
+                    {t('sidebar.mode')}
                   </div>
                   {isEndpointLoading ? (
                     <div className="flex w-full flex-col gap-2">

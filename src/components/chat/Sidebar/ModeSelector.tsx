@@ -11,8 +11,10 @@ import {
 import { useStore } from '@/store'
 import { useQueryState } from 'nuqs'
 import useChatActions from '@/hooks/useChatActions'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 export function ModeSelector() {
+  const { t } = useLocale()
   const { mode, setMode, setMessages, setSelectedModel } = useStore()
   const { clearChat } = useChatActions()
   const [, setAgentId] = useQueryState('agent')
@@ -44,11 +46,15 @@ export function ModeSelector() {
         </SelectTrigger>
         <SelectContent className="border border-border bg-background font-geist shadow-lg">
           <SelectItem value="agent" className="cursor-pointer">
-            <div className="text-xs font-medium uppercase">Agent</div>
+            <div className="text-xs font-medium uppercase">
+              {t('sidebar.mode_agent')}
+            </div>
           </SelectItem>
 
           <SelectItem value="team" className="cursor-pointer">
-            <div className="text-xs font-medium uppercase">Team</div>
+            <div className="text-xs font-medium uppercase">
+              {t('sidebar.mode_team')}
+            </div>
           </SelectItem>
         </SelectContent>
       </Select>

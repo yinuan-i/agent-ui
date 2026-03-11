@@ -6,8 +6,10 @@ import { useStore } from '../store'
 import { AgentDetails, TeamDetails, type ChatMessage } from '@/types/os'
 import { getAgentsAPI, getStatusAPI, getTeamsAPI } from '@/api/os'
 import { useQueryState } from 'nuqs'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const useChatActions = () => {
+  const { t } = useLocale()
   const { chatInputRef } = useStore()
   const selectedEndpoint = useStore((state) => state.selectedEndpoint)
   const authToken = useStore((state) => state.authToken)
@@ -30,24 +32,24 @@ const useChatActions = () => {
     } catch {
       return 503
     }
-  }, [selectedEndpoint, authToken])
+  }, [selectedEndpoint, authToken, t])
 
   const getAgents = useCallback(async () => {
     try {
       const agents = await getAgentsAPI(selectedEndpoint, authToken)
       return agents
     } catch {
-      toast.error('Error fetching agents')
+      toast.error(t('errors.fetch_agents'))
       return []
     }
-  }, [selectedEndpoint, authToken])
+  }, [selectedEndpoint, authToken, t])
 
   const getTeams = useCallback(async () => {
     try {
       const teams = await getTeamsAPI(selectedEndpoint, authToken)
       return teams
     } catch {
-      toast.error('Error fetching teams')
+      toast.error(t('errors.fetch_teams'))
       return []
     }
   }, [selectedEndpoint, authToken])

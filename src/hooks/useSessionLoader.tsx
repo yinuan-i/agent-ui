@@ -4,6 +4,7 @@ import { useStore } from '../store'
 import { toast } from 'sonner'
 import { ChatMessage, ToolCall, ReasoningMessage, ChatEntry } from '@/types/os'
 import { getJsonMarkdown } from '@/lib/utils'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface SessionResponse {
   session_id: string
@@ -25,6 +26,7 @@ interface LoaderArgs {
 }
 
 const useSessionLoader = () => {
+  const { t } = useLocale()
   const setMessages = useStore((state) => state.setMessages)
   const selectedEndpoint = useStore((state) => state.selectedEndpoint)
   const authToken = useStore((state) => state.authToken)
@@ -48,13 +50,13 @@ const useSessionLoader = () => {
         )
         setSessionsData(sessions.data ?? [])
       } catch {
-        toast.error('Error loading sessions')
+        toast.error(t('errors.load_sessions'))
         setSessionsData([])
       } finally {
         setIsSessionsLoading(false)
       }
     },
-    [selectedEndpoint, authToken, setSessionsData, setIsSessionsLoading]
+    [selectedEndpoint, authToken, setSessionsData, setIsSessionsLoading, t]
   )
 
   const getSession = useCallback(

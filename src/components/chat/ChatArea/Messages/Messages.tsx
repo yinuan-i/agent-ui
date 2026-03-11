@@ -23,6 +23,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface MessageListProps {
   messages: ChatMessage[]
@@ -81,6 +82,7 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
   runStartedAt,
   runCompletedAt
 }) => {
+  const { t } = useLocale()
   const [open, setOpen] = useState(false)
   const [now, setNow] = useState(() => Date.now())
   const [selectedTool, setSelectedTool] = useState<ToolCall | null>(null)
@@ -149,36 +151,39 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
   const fallbackSeconds = isStreaming ? elapsedSeconds : completedSeconds
   const displaySeconds = totalSeconds > 0 ? totalSeconds : fallbackSeconds
   const formatDuration = (seconds: number) => {
-    if (!Number.isFinite(seconds) || seconds <= 0) return '1 s'
-    if (seconds < 1) return `${seconds.toFixed(2)} s`
-    if (seconds < 10) return `${seconds.toFixed(1)} s`
-    return `${Math.round(seconds)} s`
+    const unit = t('time.seconds_short')
+    if (!Number.isFinite(seconds) || seconds <= 0) return `1 ${unit}`
+    if (seconds < 1) return `${seconds.toFixed(2)} ${unit}`
+    if (seconds < 10) return `${seconds.toFixed(1)} ${unit}`
+    return `${Math.round(seconds)} ${unit}`
   }
   const timeLabel = isStreaming
-    ? 'Working...'
-    : `Worked for ${formatDuration(displaySeconds)}`
+    ? t('chat.working')
+    : `${t('chat.worked_for')} ${formatDuration(displaySeconds)}`
 
   const activeToolName = useMemo(() => {
     for (let i = orderedTools.length - 1; i >= 0; i -= 1) {
       if (!isToolCompleted(orderedTools[i])) {
-        return orderedTools[i].tool_name || 'Tool'
+        return orderedTools[i].tool_name || t('chat.tool')
       }
     }
     return null
   }, [orderedTools, isToolCompleted])
 
   const items = [
-    { type: 'run' as const, label: 'Run Started' },
+    { type: 'run' as const, label: t('chat.run_started') },
     ...orderedTools.map((tool) => ({
       type: 'tool' as const,
       label: isToolCompleted(tool)
-        ? `Tool call completed: ${tool.tool_name || 'Tool'}`
-        : `${tool.tool_name || 'Tool'}`,
+        ? `${t('chat.tool_call_completed')}${tool.tool_name || t('chat.tool')}`
+        : `${tool.tool_name || t('chat.tool')}`,
       tool
     })),
     {
       type: 'run' as const,
-      label: hasInProgressTools ? 'Run In Progress' : 'Run Completed'
+      label: hasInProgressTools
+        ? t('chat.run_in_progress')
+        : t('chat.run_completed')
     }
   ]
 
@@ -249,19 +254,25 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
           <DialogHeader>
             <div className="flex items-center gap-2">
               <Icon type="hammer" size="xs" className="text-secondary" />
-              <DialogTitle className="text-base">Tool Call Details</DialogTitle>
+              <DialogTitle className="text-base">
+                {t('chat.tool_call_details')}
+              </DialogTitle>
             </div>
             <DialogDescription>
-              {selectedTool?.tool_name || 'Tool'}
+              {selectedTool?.tool_name || t('chat.tool')}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 text-sm text-primary">
             <div>
-              <p className="text-xs uppercase text-secondary">Tool Name</p>
+              <p className="text-xs uppercase text-secondary">
+                {t('chat.tool_name')}
+              </p>
               <p className="mt-1">{selectedTool?.tool_name || '-'}</p>
             </div>
             <div>
-              <p className="text-xs uppercase text-secondary">Tool Args</p>
+              <p className="text-xs uppercase text-secondary">
+                {t('chat.tool_args')}
+              </p>
               <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-border bg-background-secondary p-3 text-xs text-primary">
                 {selectedTool?.tool_args
                   ? JSON.stringify(selectedTool.tool_args, null, 2)
@@ -269,7 +280,9 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
               </pre>
             </div>
             <div>
-              <p className="text-xs uppercase text-secondary">Tool Metrics</p>
+              <p className="text-xs uppercase text-secondary">
+                {t('chat.tool_metrics')}
+              </p>
               <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-border bg-background-secondary p-3 text-xs text-primary">
                 {selectedTool?.metrics
                   ? JSON.stringify(selectedTool.metrics, null, 2)
@@ -277,18 +290,20 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
               </pre>
             </div>
             <div>
-              <p className="text-xs uppercase text-secondary">Tool Result</p>
+              <p className="text-xs uppercase text-secondary">
+                {t('chat.tool_result')}
+              </p>
               <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-border bg-background-secondary p-3 text-xs text-primary">
                 {(() => {
                   const result =
                     selectedTool?.result ??
                     selectedTool?.content ??
-                    'No result (tool output not returned by server)'
+                    t('chat.no_result')
                   if (typeof result === 'string') return result
                   try {
                     return JSON.stringify(result, null, 2)
                   } catch {
-                    return 'Unable to render result'
+                    return t('chat.render_result_failed')
                   }
                 })()}
               </pre>
@@ -300,15 +315,19 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
   )
 }
 
-const ToolPill: FC<{ toolName?: string }> = ({ toolName }) => (
-  <div className="cursor-default rounded-full border border-border bg-background-secondary px-2 py-1.5 text-xs">
-    <p className="font-dmmono uppercase text-primary/80">
-      {toolName || 'Tool'}
-    </p>
-  </div>
-)
+const ToolPill: FC<{ toolName?: string }> = ({ toolName }) => {
+  const { t } = useLocale()
+  return (
+    <div className="cursor-default rounded-full border border-border bg-background-secondary px-2 py-1.5 text-xs">
+      <p className="font-dmmono uppercase text-primary/80">
+        {toolName || t('chat.tool')}
+      </p>
+    </div>
+  )
+}
 
 const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) => {
+  const { t } = useLocale()
   const isStreaming = useStore((state) => state.isStreaming)
   const isStreamingMessage = isStreaming && isLastMessage
   const shouldShowToolSummary =
@@ -325,7 +344,7 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
       <div className="flex items-start gap-3">
         <Tooltip
           delayDuration={0}
-          content={<p className="text-primary">Tool Calls</p>}
+          content={<p className="text-primary">{t('chat.tool_calls')}</p>}
           side="top"
           contentClassName="border border-border bg-background text-primary shadow-sm"
         >
@@ -359,14 +378,14 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
           <div className="flex items-start gap-4">
             <Tooltip
               delayDuration={0}
-              content={<p className="text-primary">Reasoning</p>}
+              content={<p className="text-primary">{t('chat.reasoning')}</p>}
               side="top"
               contentClassName="border border-border bg-background text-primary shadow-sm"
             >
               <Icon type="reasoning" size="sm" />
             </Tooltip>
             <div className="flex flex-col gap-3">
-              <p className="text-xs uppercase">Reasoning</p>
+              <p className="text-xs uppercase">{t('chat.reasoning')}</p>
               <Reasonings reasoning={message.extra_data.reasoning_steps} />
             </div>
           </div>
@@ -376,7 +395,7 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
           <div className="flex items-start gap-4">
             <Tooltip
               delayDuration={0}
-              content={<p className="text-primary">References</p>}
+              content={<p className="text-primary">{t('chat.references')}</p>}
               side="top"
               contentClassName="border border-border bg-background text-primary shadow-sm"
             >
@@ -391,14 +410,17 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
     </div>
   )
 }
-const Reasoning: FC<ReasoningStepProps> = ({ index, stepTitle }) => (
-  <div className="flex items-center gap-2 text-secondary">
-    <div className="flex h-[20px] items-center rounded-md bg-background-secondary p-2">
-      <p className="text-xs">STEP {index + 1}</p>
+const Reasoning: FC<ReasoningStepProps> = ({ index, stepTitle }) => {
+  const { t } = useLocale()
+  return (
+    <div className="flex items-center gap-2 text-secondary">
+      <div className="flex h-[20px] items-center rounded-md bg-background-secondary p-2">
+        <p className="text-xs">{`${t('chat.step')} ${index + 1}`}</p>
+      </div>
+      <p className="text-xs">{stepTitle}</p>
     </div>
-    <p className="text-xs">{stepTitle}</p>
-  </div>
-)
+  )
+}
 const Reasonings: FC<ReasoningProps> = ({ reasoning }) => (
   <div className="flex flex-col items-start justify-center gap-2">
     {reasoning.map((title, index) => (

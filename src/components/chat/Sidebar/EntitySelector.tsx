@@ -13,8 +13,10 @@ import { useQueryState } from 'nuqs'
 import Icon from '@/components/ui/icon'
 import { useEffect } from 'react'
 import useChatActions from '@/hooks/useChatActions'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 export function EntitySelector() {
+  const { t } = useLocale()
   const { mode, agents, teams, setMessages, setSelectedModel } = useStore()
 
   const { focusChatInput } = useChatActions()
@@ -30,7 +32,12 @@ export function EntitySelector() {
 
   const currentEntities = mode === 'team' ? teams : agents
   const currentValue = mode === 'team' ? teamId : agentId
-  const placeholder = mode === 'team' ? 'Select Team' : 'Select Agent'
+  const placeholder =
+    mode === 'team' ? t('sidebar.select_team') : t('sidebar.select_agent')
+  const emptyPlaceholder =
+    mode === 'team'
+      ? t('sidebar.no_teams_available')
+      : t('sidebar.no_agents_available')
 
   useEffect(() => {
     if (currentValue && currentEntities.length > 0) {
@@ -74,7 +81,7 @@ export function EntitySelector() {
     return (
       <Select disabled>
         <SelectTrigger className="h-9 w-full rounded-xl border border-border bg-background text-xs font-medium uppercase text-secondary opacity-50">
-          <SelectValue placeholder={`No ${mode}s Available`} />
+          <SelectValue placeholder={emptyPlaceholder} />
         </SelectTrigger>
       </Select>
     )

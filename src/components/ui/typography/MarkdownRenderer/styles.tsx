@@ -1,6 +1,7 @@
 'use client'
 
 import { FC, useState } from 'react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -197,6 +198,7 @@ const Heading6 = ({ className, ...props }: HeadingProps) => (
 )
 
 const Img = ({ src, alt }: ImgProps) => {
+  const { t } = useLocale()
   const [error, setError] = useState(false)
 
   if (!src) return null
@@ -205,7 +207,9 @@ const Img = ({ src, alt }: ImgProps) => {
     <div className="w-full max-w-xl">
       {error ? (
         <div className="flex h-40 flex-col items-center justify-center gap-2 rounded-md bg-accent/60 text-muted">
-          <Paragraph className="text-primary">Image unavailable</Paragraph>
+          <Paragraph className="text-primary">
+            {t('media.image_unavailable')}
+          </Paragraph>
           <Link
             href={src}
             target="_blank"
@@ -219,7 +223,7 @@ const Img = ({ src, alt }: ImgProps) => {
           src={src}
           width={1280}
           height={720}
-          alt={alt ?? 'Rendered image'}
+          alt={alt ?? t('media.rendered_image_alt')}
           className="size-full rounded-md object-cover"
           onError={() => setError(true)}
           unoptimized

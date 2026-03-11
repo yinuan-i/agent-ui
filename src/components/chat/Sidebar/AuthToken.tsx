@@ -4,6 +4,7 @@ import { useStore } from '@/store'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import Icon from '@/components/ui/icon'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const AuthToken = ({
   hasEnvToken,
@@ -12,6 +13,7 @@ const AuthToken = ({
   hasEnvToken?: boolean
   envToken?: string
 }) => {
+  const { t } = useLocale()
   const { authToken, setAuthToken } = useStore()
   const [isEditing, setIsEditing] = useState(false)
   const [tokenValue, setTokenValue] = useState('')
@@ -57,12 +59,12 @@ const AuthToken = ({
 
   const displayValue = authToken
     ? `${'*'.repeat(Math.min(authToken.length, 20))}${authToken.length > 20 ? '...' : ''}`
-    : 'NO TOKEN SET'
+    : t('sidebar.no_token_set')
 
   return (
     <div className="flex flex-col items-start gap-2">
       <div className="text-xs font-medium uppercase text-primary">
-        Auth Token
+        {t('sidebar.auth_token')}
       </div>
       {isEditing ? (
         <div className="flex w-full items-center gap-1">
@@ -71,7 +73,7 @@ const AuthToken = ({
             value={tokenValue}
             onChange={(e) => setTokenValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Enter authentication token..."
+            placeholder={t('sidebar.enter_token')}
             className="flex h-9 w-full items-center text-ellipsis rounded-xl border border-border bg-background p-3 text-xs font-medium text-primary placeholder:text-muted"
             autoFocus
           />
@@ -104,7 +106,7 @@ const AuthToken = ({
                   transition={{ duration: 0.2 }}
                 >
                   <p className="flex items-center gap-2 whitespace-nowrap text-xs font-medium text-primary">
-                    <Icon type="edit" size="xxs" /> EDIT TOKEN
+                    <Icon type="edit" size="xxs" /> {t('sidebar.edit_token')}
                   </p>
                 </motion.div>
               ) : (
@@ -117,7 +119,7 @@ const AuthToken = ({
                   transition={{ duration: 0.2 }}
                 >
                   <p className="text-xs font-medium text-muted">
-                    {isMounted ? displayValue : 'NO TOKEN SET'}
+                    {isMounted ? displayValue : t('sidebar.no_token_set')}
                   </p>
                 </motion.div>
               )}
@@ -129,7 +131,7 @@ const AuthToken = ({
               size="icon"
               onClick={handleClear}
               className="hover:cursor-pointer hover:bg-transparent"
-              title="Clear token"
+              title={t('sidebar.clear_token')}
             >
               <Icon type="x" size="xs" />
             </Button>

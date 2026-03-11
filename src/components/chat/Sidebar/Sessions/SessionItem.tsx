@@ -10,6 +10,7 @@ import { useState } from 'react'
 import DeleteSessionModal from './DeleteSessionModal'
 import useChatActions from '@/hooks/useChatActions'
 import { truncateText, cn } from '@/lib/utils'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 type SessionItemProps = SessionEntry & {
   isSelected: boolean
@@ -23,6 +24,7 @@ const SessionItem = ({
   currentSessionId,
   onSessionClick
 }: SessionItemProps) => {
+  const { t } = useLocale()
   const [agentId] = useQueryState('agent')
   const [teamId] = useQueryState('team')
   const [dbId] = useQueryState('db_id')
@@ -68,16 +70,20 @@ const SessionItem = ({
           setSessionId(null)
           clearChat()
         }
-        toast.success('Session deleted')
+        toast.success(t('sessions.deleted'))
       } else {
         const errorMsg = await response?.text()
         toast.error(
-          `Failed to delete session: ${response?.statusText || 'Unknown error'} ${errorMsg || ''}`
+          `${t('sessions.delete_failed')}: ${
+            response?.statusText || t('errors.unknown')
+          } ${errorMsg || ''}`
         )
       }
     } catch (error) {
       toast.error(
-        `Failed to delete session: ${error instanceof Error ? error.message : String(error)}`
+        `${t('sessions.delete_failed')}: ${
+          error instanceof Error ? error.message : String(error)
+        }`
       )
     } finally {
       setIsDeleteModalOpen(false)

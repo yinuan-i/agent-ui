@@ -10,6 +10,7 @@ import SessionItem from './SessionItem'
 import SessionBlankState from './SessionBlankState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface SkeletonListProps {
   skeletonCount: number
@@ -32,6 +33,7 @@ const SkeletonList: FC<SkeletonListProps> = ({ skeletonCount }) => {
 }
 
 const Sessions = () => {
+  const { t } = useLocale()
   const [agentId] = useQueryState('agent', {
     parse: (v: string | null) => v || undefined,
     history: 'push'
@@ -124,7 +126,9 @@ const Sessions = () => {
   if (isSessionsLoading || isEndpointLoading) {
     return (
       <div className="w-full">
-        <div className="mb-2 text-xs font-medium uppercase">Sessions</div>
+        <div className="mb-2 text-xs font-medium uppercase">
+          {t('sidebar.sessions')}
+        </div>
         <div className="mt-4 h-[calc(100vh-325px)] w-full overflow-y-auto">
           <SkeletonList skeletonCount={5} />
         </div>
@@ -134,7 +138,9 @@ const Sessions = () => {
 
   return (
     <div className="w-full">
-      <div className="mb-2 w-full text-xs font-medium uppercase">Sessions</div>
+      <div className="mb-2 w-full text-xs font-medium uppercase">
+        {t('sidebar.sessions')}
+      </div>
       <div
         className={`h-[calc(100vh-345px)] overflow-y-auto font-geist transition-all duration-300 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar]:transition-opacity [&::-webkit-scrollbar]:duration-300 ${
           isScrolling

@@ -7,6 +7,7 @@ import Images from './Multimedia/Images'
 import Audios from './Multimedia/Audios'
 import { memo, type ReactNode } from 'react'
 import AgentThinkingLoader from './AgentThinkingLoader'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface MessageProps {
   message: ChatMessage
@@ -14,16 +15,17 @@ interface MessageProps {
 }
 
 const AgentMessage = ({ message, header }: MessageProps) => {
+  const { t } = useLocale()
   const { streamingErrorMessage } = useStore()
   let messageContent
   if (message.streamingError) {
     messageContent = (
       <p className="text-destructive">
-        Oops! Something went wrong while streaming.{' '}
+        {t('chat.streaming_error_title')}{' '}
         {streamingErrorMessage ? (
           <>{streamingErrorMessage}</>
         ) : (
-          'Please try refreshing the page or try again later.'
+          t('chat.streaming_error_retry')
         )}
       </p>
     )

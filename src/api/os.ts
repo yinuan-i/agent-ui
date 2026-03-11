@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import { APIRoutes } from './routes'
 
 import { AgentDetails, Sessions, TeamDetails } from '@/types/os'
+import { tRuntime } from '@/i18n/runtime'
 
 // Helper function to create headers with optional auth token
 const createHeaders = (authToken?: string): HeadersInit => {
@@ -28,13 +29,13 @@ export const getAgentsAPI = async (
       headers: createHeaders(authToken)
     })
     if (!response.ok) {
-      toast.error(`Failed to fetch  agents: ${response.statusText}`)
+      toast.error(`${tRuntime('errors.fetch_agents_failed')}${response.statusText}`)
       return []
     }
     const data = await response.json()
     return data
   } catch {
-    toast.error('Error fetching  agents')
+    toast.error(tRuntime('errors.fetch_agents'))
     return []
   }
 }
@@ -135,14 +136,14 @@ export const getTeamsAPI = async (
       headers: createHeaders(authToken)
     })
     if (!response.ok) {
-      toast.error(`Failed to fetch  teams: ${response.statusText}`)
+      toast.error(`${tRuntime('errors.fetch_teams_failed')}${response.statusText}`)
       return []
     }
     const data = await response.json()
 
     return data
   } catch {
-    toast.error('Error fetching  teams')
+    toast.error(tRuntime('errors.fetch_teams'))
     return []
   }
 }

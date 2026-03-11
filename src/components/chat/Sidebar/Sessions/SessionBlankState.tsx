@@ -1,6 +1,7 @@
 import React from 'react'
 import { useStore } from '@/store'
 import { useQueryState } from 'nuqs'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const HistoryBlankStateIcon = () => (
   <svg
@@ -86,19 +87,20 @@ const HistoryBlankStateIcon = () => (
 )
 
 const SessionBlankState = () => {
+  const { t } = useLocale()
   const { selectedEndpoint, isEndpointActive } = useStore()
   const [agentId] = useQueryState('agent')
 
   const errorMessage = (() => {
     switch (true) {
       case !isEndpointActive:
-        return 'Endpoint is not connected. Please connect the endpoint to see the history.'
+        return t('sessions.endpoint_disconnected')
       case !selectedEndpoint:
-        return 'Select an endpoint to see the history.'
+        return t('sessions.select_endpoint')
       case !agentId:
-        return 'Select an agent to see the history.'
+        return t('sessions.select_agent')
       default:
-        return 'No session records yet. Start a conversation to create one.'
+        return t('sessions.no_records')
     }
   })()
 
@@ -107,7 +109,9 @@ const SessionBlankState = () => {
       <div className="flex flex-col items-center gap-1">
         <HistoryBlankStateIcon />
         <div className="flex flex-col items-center gap-2">
-          <h3 className="text-sm font-medium text-primary">No Session found</h3>
+          <h3 className="text-sm font-medium text-primary">
+            {t('sessions.no_session_found')}
+          </h3>
           <p className="max-w-[210px] text-center text-sm text-secondary">
             {errorMessage}
           </p>

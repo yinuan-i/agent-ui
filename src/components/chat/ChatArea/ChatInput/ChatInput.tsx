@@ -7,8 +7,10 @@ import { useStore } from '@/store'
 import useAIChatStreamHandler from '@/hooks/useAIStreamHandler'
 import { useQueryState } from 'nuqs'
 import Icon from '@/components/ui/icon'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const ChatInput = () => {
+  const { t } = useLocale()
   const { chatInputRef } = useStore()
 
   const { handleStreamResponse } = useAIChatStreamHandler()
@@ -26,7 +28,7 @@ const ChatInput = () => {
       await handleStreamResponse(currentMessage)
     } catch (error) {
       toast.error(
-        `Error in handleSubmit: ${
+        `${t('chat.submit_error')}${
           error instanceof Error ? error.message : String(error)
         }`
       )
@@ -36,7 +38,7 @@ const ChatInput = () => {
   return (
     <div className="relative mx-auto flex w-full max-w-[768px] items-end justify-center gap-x-2 font-geist">
       <TextArea
-        placeholder={'Ask anything'}
+        placeholder={t('chat.input_placeholder')}
         value={inputMessage}
         onChange={(e) => setInputMessage(e.target.value)}
         onKeyDown={(e) => {
