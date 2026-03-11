@@ -1,10 +1,10 @@
 import { type HeadingSizeMap } from './types'
 
 export const HEADING_SIZES: HeadingSizeMap = {
-  1: 'text-4xl font-semibold font-geist',
-  2: 'text-3xl font-medium font-geist',
-  3: 'text-2xl font-geist font-medium',
-  4: 'text-xl',
-  5: 'text-lg',
-  6: 'text-base'
+  1: 'text-3xl font-semibold',
+  2: 'text-2xl font-semibold',
+  3: 'text-xl font-semibold',
+  4: 'text-lg font-medium',
+  5: 'text-base font-medium',
+  6: 'text-sm font-medium'
 }

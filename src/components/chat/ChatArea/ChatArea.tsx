@@ -7,16 +7,16 @@ import Icon from '@/components/ui/icon'
 import { useStore } from '@/store'
 
 const ChatTopBar = () => (
-  <div className="flex h-14 items-center justify-between border-b border-border px-4 font-geist">
+  <div className="flex h-14 items-center justify-between px-6">
     <div className="flex items-center gap-2 text-sm font-medium text-primary">
       <span>ChatGPT</span>
       <Icon type="chevron-down" size="xs" className="text-muted" />
     </div>
-    <div className="flex items-center gap-2 text-xs">
-      <div className="rounded-full bg-primary px-3 py-1 text-primary-foreground">
+    <div className="flex items-center gap-2">
+      <div className="rounded-full px-3 py-2 text-[13px] font-medium leading-4 text-primary hover:bg-surface-hover">
         Log in
       </div>
-      <div className="rounded-full border border-border px-3 py-1 text-primary hover:bg-surface-hover">
+      <div className="rounded-full bg-primary px-3 py-2 text-[13px] font-medium leading-4 text-primary-foreground shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]">
         Sign up
       </div>
     </div>

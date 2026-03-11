@@ -30,7 +30,6 @@ import type {
   PreparedTextProps
 } from './types'
 
-import { HEADING_SIZES } from '../Heading/constants'
 import { PARAGRAPH_SIZES } from '../Paragraph/constants'
 
 const filterProps = (props: object) => {
@@ -74,7 +73,7 @@ const Paragraph = ({ className, ...props }: ParagraphProps) => (
 
 const EmphasizedText = ({ className, ...props }: EmphasizedTextProps) => (
   <em
-    className={cn(className, 'text-sm font-semibold')}
+    className={cn(className, PARAGRAPH_SIZES.body, 'font-medium')}
     {...filterProps(props)}
   />
 )
@@ -88,14 +87,14 @@ const ItalicText = ({ className, ...props }: ItalicTextProps) => (
 
 const StrongText = ({ className, ...props }: StrongTextProps) => (
   <strong
-    className={cn(className, 'text-sm font-semibold')}
+    className={cn(className, PARAGRAPH_SIZES.body, 'font-medium')}
     {...filterProps(props)}
   />
 )
 
 const BoldText = ({ className, ...props }: BoldTextProps) => (
   <b
-    className={cn(className, 'text-sm font-semibold')}
+    className={cn(className, PARAGRAPH_SIZES.body, 'font-medium')}
     {...filterProps(props)}
   />
 )
@@ -140,7 +139,8 @@ const AnchorLink = ({ className, ...props }: AnchorLinkProps) => (
   <a
     className={cn(
       className,
-      'cursor-pointer text-xs underline text-link hover:text-link-hover'
+      PARAGRAPH_SIZES.body,
+      'cursor-pointer underline text-link hover:text-link-hover'
     )}
     target="_blank"
     rel="noopener noreferrer"
@@ -149,31 +149,49 @@ const AnchorLink = ({ className, ...props }: AnchorLinkProps) => (
 )
 
 const Heading1 = ({ className, ...props }: HeadingProps) => (
-  <h1 className={cn(className, HEADING_SIZES[3])} {...filterProps(props)} />
+  <h1
+    className={cn(
+      className,
+      'text-xl font-semibold leading-6 sm:text-2xl sm:leading-7'
+    )}
+    {...filterProps(props)}
+  />
 )
 
 const Heading2 = ({ className, ...props }: HeadingProps) => (
-  <h2 className={cn(className, HEADING_SIZES[3])} {...filterProps(props)} />
+  <h2
+    className={cn(
+      className,
+      'text-xl font-semibold leading-6 sm:text-2xl sm:leading-7'
+    )}
+    {...filterProps(props)}
+  />
 )
 
 const Heading3 = ({ className, ...props }: HeadingProps) => (
-  <h3 className={cn(className, PARAGRAPH_SIZES.lead)} {...filterProps(props)} />
+  <h3
+    className={cn(className, 'text-base font-semibold leading-6')}
+    {...filterProps(props)}
+  />
 )
 
 const Heading4 = ({ className, ...props }: HeadingProps) => (
-  <h4 className={cn(className, PARAGRAPH_SIZES.lead)} {...filterProps(props)} />
+  <h4
+    className={cn(className, 'text-base font-semibold leading-6')}
+    {...filterProps(props)}
+  />
 )
 
 const Heading5 = ({ className, ...props }: HeadingProps) => (
   <h5
-    className={cn(className, PARAGRAPH_SIZES.title)}
+    className={cn(className, 'text-sm font-medium leading-5')}
     {...filterProps(props)}
   />
 )
 
 const Heading6 = ({ className, ...props }: HeadingProps) => (
   <h6
-    className={cn(className, PARAGRAPH_SIZES.title)}
+    className={cn(className, 'text-sm font-medium leading-5')}
     {...filterProps(props)}
   />
 )

@@ -104,6 +104,9 @@
     @apply bg-background text-primary;
     font-family: var(--font-geist-sans);
     background-color: var(--main-surface-primary);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-synthesis: none;
   }
 }
 

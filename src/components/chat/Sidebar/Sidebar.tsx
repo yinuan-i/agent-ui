@@ -19,7 +19,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 const ENDPOINT_PLACEHOLDER = 'NO ENDPOINT ADDED'
 const SidebarHeader = () => (
   <div className="flex items-center gap-2">
-    <Icon type="agno" size="xs" />
+    <img
+      src="/favicon.ico"
+      alt="Agent UI"
+      className="h-4 w-4 rounded-sm"
+    />
     <span className="text-xs font-medium uppercase text-primary">
       Agent UI
     </span>
