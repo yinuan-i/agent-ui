@@ -10,13 +10,13 @@ function NewChatButton() {
   const { messages } = useStore()
   return (
     <Button
-      className="z-10 cursor-pointer rounded bg-brand px-4 py-2 font-bold text-primary hover:bg-brand/80 disabled:cursor-not-allowed disabled:opacity-50"
+      className="z-10 cursor-pointer rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-primary shadow-none hover:bg-surface-hover disabled:cursor-not-allowed disabled:opacity-50"
       onClick={clearChat}
       disabled={messages.length === 0}
     >
       <div className="flex items-center gap-2">
         <p>New Chat</p>{' '}
-        <Icon type="plus-icon" size="xs" className="text-background" />
+        <Icon type="plus-icon" size="xs" className="text-primary" />
       </div>
     </Button>
   )

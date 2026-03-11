@@ -3,10 +3,14 @@ export interface ToolCall {
   content: string | null
   tool_call_id: string
   tool_name: string
-  tool_args: Record<string, string>
+  tool_args: Record<string, unknown>
   tool_call_error: boolean
-  metrics: {
-    time: number
+  result?: unknown
+  metrics?: {
+    time?: number
+    duration?: number
+    start_time?: number
+    end_time?: number
   }
   created_at: number
 }
@@ -204,6 +208,8 @@ export interface ChatMessage {
     reasoning_steps?: ReasoningSteps[]
     reasoning_messages?: ReasoningMessage[]
     references?: ReferenceData[]
+    run_started_at?: number
+    run_completed_at?: number
   }
   images?: ImageData[]
   videos?: VideoData[]

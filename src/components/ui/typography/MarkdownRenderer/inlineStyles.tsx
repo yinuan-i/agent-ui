@@ -117,7 +117,10 @@ const Blockquote = ({ className, ...props }: BlockquoteProps) => (
 
 const AnchorLink = ({ className, ...props }: AnchorLinkProps) => (
   <a
-    className={cn(className, 'cursor-pointer text-xs underline')}
+    className={cn(
+      className,
+      'cursor-pointer text-xs underline text-link hover:text-link-hover'
+    )}
     target="_blank"
     rel="noopener noreferrer"
     {...filterProps(props)}
@@ -156,7 +159,7 @@ const Img = ({ src, alt }: ImgProps) => {
   return (
     <div className="w-full max-w-xl">
       {error ? (
-        <div className="flex h-40 flex-col items-center justify-center gap-2 rounded-md bg-secondary/50 text-muted">
+        <div className="flex h-40 flex-col items-center justify-center gap-2 rounded-md bg-accent/60 text-muted">
           <Paragraph className="text-primary">Image unavailable</Paragraph>
           <Link
             href={src}

@@ -34,7 +34,7 @@ const ChatInput = () => {
   }
 
   return (
-    <div className="relative mx-auto mb-1 flex w-full max-w-2xl items-end justify-center gap-x-2 font-geist">
+    <div className="relative mx-auto flex w-full max-w-[768px] items-end justify-center gap-x-2 font-geist">
       <TextArea
         placeholder={'Ask anything'}
         value={inputMessage}
@@ -50,7 +50,7 @@ const ChatInput = () => {
             handleSubmit()
           }
         }}
-        className="w-full border border-accent bg-primaryAccent px-4 text-sm text-primary focus:border-accent"
+        className="w-full px-4 text-sm text-primary"
         disabled={!(selectedAgent || teamId)}
         ref={chatInputRef}
       />
@@ -60,9 +60,9 @@ const ChatInput = () => {
           !(selectedAgent || teamId) || !inputMessage.trim() || isStreaming
         }
         size="icon"
-        className="rounded-xl bg-primary p-5 text-primaryAccent"
+        className="h-10 w-10 rounded-full bg-primary text-white shadow-sm transition-colors hover:bg-primary/90 disabled:bg-primary/40"
       >
-        <Icon type="send" color="primaryAccent" />
+        <Icon type="send" color="white" />
       </Button>
     </div>
   )

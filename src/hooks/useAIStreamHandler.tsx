@@ -9,7 +9,6 @@ import { constructEndpointUrl } from '@/lib/constructEndpointUrl'
 import useAIResponseStream from './useAIResponseStream'
 import { ToolCall } from '@/types/os'
 import { useQueryState } from 'nuqs'
-import { getJsonMarkdown } from '@/lib/utils'
 
 const useAIChatStreamHandler = () => {
   const setMessages = useStore((state) => state.setMessages)
@@ -180,6 +179,18 @@ const useAIChatStreamHandler = () => {
               chunk.event === RunEvent.ReasoningStarted ||
               chunk.event === RunEvent.TeamReasoningStarted
             ) {
+              setMessages((prevMessages) => {
+                const newMessages = [...prevMessages]
+                const lastMessage = newMessages[newMessages.length - 1]
+                if (lastMessage && lastMessage.role === 'agent') {
+                  lastMessage.extra_data = {
+                    ...lastMessage.extra_data,
+                    run_started_at:
+                      chunk.created_at ?? Math.floor(Date.now() / 1000)
+                  }
+                }
+                return newMessages
+              })
               newSessionId = chunk.session_id as string
               setSessionId(chunk.session_id as string)
               if (
@@ -270,10 +281,9 @@ const useAIChatStreamHandler = () => {
                   typeof chunk?.content !== 'string' &&
                   chunk.content !== null
                 ) {
-                  const jsonBlock = getJsonMarkdown(chunk?.content)
-
-                  lastMessage.content += jsonBlock
-                  lastContent = jsonBlock
+                  // Ignore non-string streaming content to avoid noisy JSON blocks.
+                  // Final content is handled on RunCompleted.
+                  return newMessages
                 } else if (
                   chunk.response_audio?.transcript &&
                   typeof chunk.response_audio?.transcript === 'string'
@@ -385,7 +395,10 @@ const useAIChatStreamHandler = () => {
                           message.extra_data?.reasoning_steps,
                         references:
                           chunk.extra_data?.references ??
-                          message.extra_data?.references
+                          message.extra_data?.references,
+                        run_started_at: message.extra_data?.run_started_at,
+                        run_completed_at:
+                          chunk.created_at ?? Math.floor(Date.now() / 1000)
                       }
                     }
                   }

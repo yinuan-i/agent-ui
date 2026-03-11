@@ -72,7 +72,7 @@ const AuthToken = ({
             onChange={(e) => setTokenValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Enter authentication token..."
-            className="flex h-9 w-full items-center text-ellipsis rounded-xl border border-primary/15 bg-accent p-3 text-xs font-medium text-muted placeholder:text-muted/50"
+            className="flex h-9 w-full items-center text-ellipsis rounded-xl border border-border bg-background p-3 text-xs font-medium text-primary placeholder:text-muted"
             autoFocus
           />
           <Button
@@ -87,7 +87,7 @@ const AuthToken = ({
       ) : (
         <div className="flex w-full items-center gap-1">
           <motion.div
-            className="relative flex h-9 w-full cursor-pointer items-center justify-between rounded-xl border border-primary/15 bg-accent p-3 uppercase"
+            className="relative flex h-9 w-full cursor-pointer items-center justify-between rounded-xl border border-border bg-background p-3 uppercase"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             onClick={() => setIsEditing(true)}

@@ -20,7 +20,9 @@ const ENDPOINT_PLACEHOLDER = 'NO ENDPOINT ADDED'
 const SidebarHeader = () => (
   <div className="flex items-center gap-2">
     <Icon type="agno" size="xs" />
-    <span className="text-xs font-medium uppercase text-white">Agent UI</span>
+    <span className="text-xs font-medium uppercase text-primary">
+      Agent UI
+    </span>
   </div>
 )
 
@@ -35,15 +37,15 @@ const NewChatButton = ({
     onClick={onClick}
     disabled={disabled}
     size="lg"
-    className="h-9 w-full rounded-xl bg-primary text-xs font-medium text-background hover:bg-primary/80"
+    className="h-9 w-full rounded-xl border border-border bg-background text-xs font-medium text-primary shadow-none hover:bg-surface-hover"
   >
-    <Icon type="plus-icon" size="xs" className="text-background" />
+    <Icon type="plus-icon" size="xs" className="text-primary" />
     <span className="uppercase">New Chat</span>
   </Button>
 )
 
 const ModelDisplay = ({ model }: { model: string }) => (
-  <div className="flex h-9 w-full items-center gap-3 rounded-xl border border-primary/15 bg-accent p-3 text-xs font-medium uppercase text-muted">
+  <div className="flex h-9 w-full items-center gap-3 rounded-xl border border-border bg-background p-3 text-xs font-medium uppercase text-secondary">
     {(() => {
       const icon = getProviderIcon(model)
       return icon ? <Icon type={icon} className="shrink-0" size="xs" /> : null
@@ -76,7 +78,7 @@ const Endpoint = () => {
   }, [selectedEndpoint])
 
   const getStatusColor = (isActive: boolean) =>
-    isActive ? 'bg-positive' : 'bg-destructive'
+    isActive ? 'bg-emerald-500' : 'bg-red-500'
 
   const handleSave = async () => {
     if (!isValidUrl(endpointValue)) {
@@ -124,7 +126,7 @@ const Endpoint = () => {
             value={endpointValue}
             onChange={(e) => setEndpointValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="flex h-9 w-full items-center text-ellipsis rounded-xl border border-primary/15 bg-accent p-3 text-xs font-medium text-muted"
+            className="flex h-9 w-full items-center text-ellipsis rounded-xl border border-border bg-background p-3 text-xs font-medium text-primary placeholder:text-muted"
             autoFocus
           />
           <Button
@@ -139,7 +141,7 @@ const Endpoint = () => {
       ) : (
         <div className="flex w-full items-center gap-1">
           <motion.div
-            className="relative flex h-9 w-full cursor-pointer items-center justify-between rounded-xl border border-primary/15 bg-accent p-3 uppercase"
+            className="relative flex h-9 w-full cursor-pointer items-center justify-between rounded-xl border border-border bg-background p-3 uppercase"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             onClick={() => setIsEditing(true)}
@@ -236,7 +238,7 @@ const Sidebar = ({
 
   return (
     <motion.aside
-      className="relative flex h-screen shrink-0 grow-0 flex-col overflow-hidden px-2 py-3 font-dmmono"
+      className="relative flex h-screen shrink-0 grow-0 flex-col overflow-hidden border-r border-border bg-background-secondary px-2 py-3 font-geist"
       initial={{ width: '16rem' }}
       animate={{ width: isCollapsed ? '2.5rem' : '16rem' }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}

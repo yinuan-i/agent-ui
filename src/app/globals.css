@@ -1,16 +1,115 @@
+@font-face {
+  font-display: swap;
+  font-family: 'OpenAI Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Regular.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'OpenAI Sans';
+  font-style: normal;
+  font-weight: 500;
+  src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Medium.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'OpenAI Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Semibold.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'OpenAI Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('https://cdn.openai.com/common/fonts/openai-sans/v2/OpenAISans-Bold.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Atkinson Hyperlegible Mono';
+  font-style: normal;
+  font-weight: 200 800;
+  src: url('https://cdn.openai.com/common/fonts/mono/hyperlegible-mono-latin.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Atkinson Hyperlegible Mono';
+  font-style: normal;
+  font-weight: 200 800;
+  src: url('https://cdn.openai.com/common/fonts/mono/hyperlegible-mono-latin-ext.woff2')
+    format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --color-border-default: 255, 255, 255, 0.2;
-    --scrollbar-width: 0.1rem;
+    --main-surface-background: #fffffff2;
+    --main-surface-primary: #ffffff;
+    --main-surface-primary-inverse: #212121;
+    --main-surface-secondary: #f9f9f9;
+    --main-surface-secondary-selected: #0000001a;
+    --main-surface-tertiary: #ececec;
+    --text-primary: #0d0d0d;
+    --text-secondary: #00000099;
+    --text-tertiary: #0000004a;
+    --text-placeholder: #000000b3;
+    --border-xlight: #0000000d;
+    --border-light: #0000001a;
+    --border-medium: #00000026;
+    --border-heavy: #0003;
+    --border-xheavy: #00000040;
+    --border-sharp: #0000000d;
+    --icon-secondary: #676767;
+    --surface-hover: #00000012;
+    --link: #2964aa;
+    --link-hover: #749ac8;
+    --selection: #007aff;
+    --scrollbar-color: #0000001a;
+    --scrollbar-width: 10px;
+    --radius-xs: 0.125rem;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --radius-3xl: 1.5rem;
+    --radius-4xl: 2rem;
+    --font-geist-sans: 'OpenAI Sans', ui-sans-serif, -apple-system,
+      system-ui, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji',
+      'Segoe UI Emoji', 'Segoe UI Symbol';
+    --font-dm-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular,
+      SF Mono, Menlo, Consolas, 'Liberation Mono', monospace;
+  }
+
+  html {
+    color-scheme: light;
   }
 
   body {
-    @apply bg-background/80 text-secondary;
+    @apply bg-background text-primary;
+    font-family: var(--font-geist-sans);
+    background-color: var(--main-surface-primary);
   }
+}
+
+::selection {
+  background-color: var(--selection);
+  color: #ffffff;
 }
 
 ::-webkit-scrollbar {
@@ -18,14 +117,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  --tw-border-opacity: 1;
-  @apply bg-border;
-  border-color: rgba(255, 255, 255, var(--tw-border-opacity));
-  border-radius: 9999px;
-  border-width: 1px;
+  background: var(--main-surface-tertiary);
+  border: 4px solid var(--main-surface-primary);
+  border-radius: 8px;
 }
 
 ::-webkit-scrollbar-track {
   background-color: transparent;
-  border-radius: 9999px;
+  border-radius: 8px;
 }

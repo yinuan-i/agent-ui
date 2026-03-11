@@ -5,14 +5,15 @@ import type { ChatMessage } from '@/types/os'
 import Videos from './Multimedia/Videos'
 import Images from './Multimedia/Images'
 import Audios from './Multimedia/Audios'
-import { memo } from 'react'
+import { memo, type ReactNode } from 'react'
 import AgentThinkingLoader from './AgentThinkingLoader'
 
 interface MessageProps {
   message: ChatMessage
+  header?: ReactNode
 }
 
-const AgentMessage = ({ message }: MessageProps) => {
+const AgentMessage = ({ message, header }: MessageProps) => {
   const { streamingErrorMessage } = useStore()
   let messageContent
   if (message.streamingError) {
@@ -69,11 +70,14 @@ const AgentMessage = ({ message }: MessageProps) => {
   }
 
   return (
-    <div className="flex flex-row items-start gap-4 font-geist">
+    <div className="flex flex-row items-start gap-4 font-geist text-primary">
       <div className="flex-shrink-0">
         <Icon type="agent" size="sm" />
       </div>
-      {messageContent}
+      <div className="flex w-full flex-col gap-4">
+        {header}
+        {messageContent}
+      </div>
     </div>
   )
 }
@@ -82,9 +86,9 @@ const UserMessage = memo(({ message }: MessageProps) => {
   return (
     <div className="flex items-start gap-4 pt-4 text-start max-md:break-words">
       <div className="flex-shrink-0">
-        <Icon type="user" size="sm" />
+        <Icon type="user" size="sm" className="text-secondary" />
       </div>
-      <div className="text-md rounded-lg font-geist text-secondary">
+      <div className="max-w-xl whitespace-pre-wrap break-words rounded-2xl border border-border bg-background-secondary px-4 py-2 text-sm text-primary">
         {message.content}
       </div>
     </div>
