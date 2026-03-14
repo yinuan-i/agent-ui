@@ -1,8 +1,8 @@
 import type { ChatMessage } from '@/types/os'
 
 import { AgentMessage, UserMessage } from './MessageItem'
-import Tooltip from '@/components/ui/tooltip'
 import React, { useEffect, useMemo, useState } from 'react'
+import Tooltip from '@/components/ui/tooltip'
 import {
   type ToolCall,
   ReasoningStepProps,
@@ -49,6 +49,12 @@ interface ToolCallSummaryProps {
   runStartedAt?: number
   runCompletedAt?: number
   streamingStatus?: StreamingStatus
+}
+
+interface ToolCallsDrawerProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  toolCalls: ToolCall[]
 }
 
 const ReferenceItem: FC<ReferenceItemProps> = ({ reference }) => (
@@ -325,14 +331,143 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
   )
 }
 
-const ToolPill: FC<{ toolName?: string }> = ({ toolName }) => {
+const ToolCallBar: FC<{
+  count: number
+  onClick: () => void
+}> = ({ count, onClick }) => {
   const { t } = useLocale()
+  const label = t('chat.tool_call_bar').replace('{count}', String(count))
   return (
-    <div className="cursor-default rounded-full border border-border bg-background-secondary px-2 py-1.5 text-xs">
-      <p className="font-dmmono uppercase text-primary/80">
-        {toolName || t('chat.tool')}
-      </p>
+    <div className="flex w-full items-center justify-start">
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex items-center gap-3 rounded-full border border-border bg-background-secondary px-4 py-2 text-xs font-semibold uppercase tracking-wider text-primary transition-colors hover:bg-surface-hover"
+      >
+        <Icon type="hammer" size="xs" className="text-secondary" />
+        <span>{label}</span>
+        <Icon
+          type="chevron-down"
+          size="xs"
+          className="text-secondary transition-transform rotate-90"
+        />
+      </button>
     </div>
+  )
+}
+
+const ToolCallsDrawer: FC<ToolCallsDrawerProps> = ({
+  open,
+  onOpenChange,
+  toolCalls
+}) => {
+  const { t } = useLocale()
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
+
+  const formatValue = (value: unknown) => {
+    if (value === null || value === undefined) return '-'
+    if (typeof value === 'string') return value
+    try {
+      return JSON.stringify(value, null, 2)
+    } catch {
+      return String(value)
+    }
+  }
+
+  const renderResult = (tool: ToolCall) => {
+    if (tool.result !== undefined) return formatValue(tool.result)
+    if (tool.content !== null && tool.content !== undefined) {
+      return formatValue(tool.content)
+    }
+    return t('chat.no_result')
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="right-0 top-0 left-auto max-h-none h-dvh w-full max-w-[420px] translate-y-0 rounded-l-2xl rounded-r-none p-0 data-[state=closed]:translate-x-full data-[state=open]:translate-x-0 transition-transform duration-200 ease-out">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <DialogHeader className="space-y-1 text-left">
+              <DialogTitle className="text-base font-semibold">
+                {t('chat.tool_calls')}
+              </DialogTitle>
+              <DialogDescription className="text-xs text-secondary">
+                {toolCalls.length}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="flex-1 overflow-auto px-6 py-4">
+            <div className="flex flex-col gap-3">
+              {toolCalls.map((tool, index) => {
+                const isOpen = expandedIndex === index
+                return (
+                  <div
+                    key={tool.tool_call_id || `${tool.tool_name}-${index}`}
+                    className="rounded-xl border border-border bg-background-secondary"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedIndex(isOpen ? null : index)
+                      }
+                      className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-medium text-primary"
+                    >
+                      <span className="truncate">
+                        {tool.tool_name || t('chat.tool')}
+                      </span>
+                      <Icon
+                        type="chevron-down"
+                        size="xs"
+                        className={cn(
+                          'text-secondary transition-transform',
+                          isOpen ? 'rotate-180' : ''
+                        )}
+                      />
+                    </button>
+                    {isOpen && (
+                      <div className="flex flex-col gap-4 border-t border-border px-4 py-4 text-xs text-secondary">
+                        <div>
+                          <p className="text-[11px] uppercase text-secondary">
+                            {t('chat.tool_name')}
+                          </p>
+                          <p className="mt-1 text-primary">
+                            {tool.tool_name || t('chat.tool')}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] uppercase text-secondary">
+                            {t('chat.tool_args')}
+                          </p>
+                          <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-background px-3 py-2 text-[11px] text-primary">
+                            {formatValue(tool.tool_args)}
+                          </pre>
+                        </div>
+                        <div>
+                          <p className="text-[11px] uppercase text-secondary">
+                            {t('chat.tool_metrics')}
+                          </p>
+                          <pre className="mt-1 max-h-32 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-background px-3 py-2 text-[11px] text-primary">
+                            {formatValue(tool.metrics)}
+                          </pre>
+                        </div>
+                        <div>
+                          <p className="text-[11px] uppercase text-secondary">
+                            {t('chat.tool_result')}
+                          </p>
+                          <pre className="mt-1 max-h-48 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-background px-3 py-2 text-[11px] text-primary">
+                            {renderResult(tool)}
+                          </pre>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -354,33 +489,6 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
         runCompletedAt={message.extra_data?.run_completed_at}
         streamingStatus={streamingStatus}
       />
-      <div className="flex items-start gap-3">
-        <Tooltip
-          delayDuration={0}
-          content={<p className="text-primary">{t('chat.tool_calls')}</p>}
-          side="top"
-          contentClassName="border border-border bg-background text-primary shadow-sm"
-        >
-          <Icon
-            type="hammer"
-            className="rounded-lg border border-border bg-background-secondary p-1"
-            size="sm"
-            color="secondary"
-          />
-        </Tooltip>
-
-        <div className="flex flex-wrap gap-2">
-          {message.tool_calls?.map((toolCall, index) => (
-            <ToolPill
-              key={
-                toolCall.tool_call_id ||
-                `${toolCall.tool_name}-${toolCall.created_at}-${index}`
-              }
-              toolName={toolCall.tool_name}
-            />
-          ))}
-        </div>
-      </div>
     </div>
   ) : null
 
@@ -447,27 +555,59 @@ const Reasonings: FC<ReasoningProps> = ({ reasoning }) => (
 )
 
 const Messages = ({ messages }: MessageListProps) => {
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerMessageIndex, setDrawerMessageIndex] = useState<number | null>(
+    null
+  )
+
   if (messages.length === 0) {
     return <ChatBlankState />
   }
+
+  const drawerToolCalls =
+    drawerMessageIndex !== null &&
+    messages[drawerMessageIndex]?.role === 'agent'
+      ? messages[drawerMessageIndex]?.tool_calls ?? []
+      : []
 
   return (
     <>
       {messages.map((message, index) => {
         const key = `${message.role}-${message.created_at}-${index}`
         const isLastMessage = index === messages.length - 1
+        const nextMessage = messages[index + 1]
+        const shouldShowToolBar =
+          message.role === 'user' &&
+          nextMessage?.role === 'agent' &&
+          (nextMessage.tool_calls?.length ?? 0) > 0
 
-        if (message.role === 'agent') {
-          return (
-            <AgentMessageWrapper
-              key={key}
-              message={message}
-              isLastMessage={isLastMessage}
-            />
-          )
-        }
-        return <UserMessage key={key} message={message} />
+        return (
+          <React.Fragment key={key}>
+            {message.role === 'agent' ? (
+              <AgentMessageWrapper
+                message={message}
+                isLastMessage={isLastMessage}
+              />
+            ) : (
+              <UserMessage message={message} />
+            )}
+            {shouldShowToolBar && (
+              <ToolCallBar
+                count={nextMessage?.tool_calls?.length ?? 0}
+                onClick={() => {
+                  setDrawerMessageIndex(index + 1)
+                  setDrawerOpen(true)
+                }}
+              />
+            )}
+          </React.Fragment>
+        )
       })}
+      <ToolCallsDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        toolCalls={drawerToolCalls}
+      />
     </>
   )
 }
