@@ -202,6 +202,7 @@ export interface ReasoningMessage {
 export type StreamingStatus = {
   status: 'working' | 'tool_started'
   tool_name?: string
+  changed_at?: number
 }
 
 export interface ChatMessage {

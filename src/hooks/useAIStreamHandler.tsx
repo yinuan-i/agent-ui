@@ -26,6 +26,34 @@ const useAIChatStreamHandler = () => {
   const setSessionsData = useStore((state) => state.setSessionsData)
   const { streamResponse } = useAIResponseStream()
 
+  const scheduleWorkingStatus = useCallback(
+    (expectedToken?: number) => {
+      setTimeout(() => {
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages]
+          const lastMessage = newMessages[newMessages.length - 1]
+          if (lastMessage && lastMessage.role === 'agent') {
+            const currentStatus = lastMessage.extra_data?.streaming_status
+            if (
+              expectedToken !== undefined &&
+              currentStatus?.changed_at === expectedToken
+            ) {
+              lastMessage.extra_data = {
+                ...lastMessage.extra_data,
+                streaming_status: {
+                  status: 'working',
+                  changed_at: Date.now()
+                }
+              }
+            }
+          }
+          return newMessages
+        })
+      }, 0)
+    },
+    [setMessages]
+  )
+
   const updateMessagesWithErrorState = useCallback(() => {
     setMessages((prevMessages) => {
       const newMessages = [...prevMessages]
@@ -194,7 +222,7 @@ const useAIChatStreamHandler = () => {
                     ...lastMessage.extra_data,
                     run_started_at:
                       chunk.created_at ?? Math.floor(Date.now() / 1000),
-                    streaming_status: { status: 'working' }
+                    streaming_status: { status: 'working', changed_at: Date.now() }
                   }
                 }
                 return newMessages
@@ -226,6 +254,7 @@ const useAIChatStreamHandler = () => {
               chunk.event === RunEvent.ToolCallCompleted ||
               chunk.event === RunEvent.TeamToolCallCompleted
             ) {
+              let statusToken: number | undefined
               setMessages((prevMessages) => {
                 const newMessages = [...prevMessages]
                 const lastMessage = newMessages[newMessages.length - 1]
@@ -239,15 +268,31 @@ const useAIChatStreamHandler = () => {
                     chunk,
                     lastMessage.tool_calls
                   )
-                  lastMessage.extra_data = {
-                    ...lastMessage.extra_data,
-                    streaming_status: isToolStart
-                      ? { status: 'tool_started', tool_name: toolName }
-                      : { status: 'working' }
+                  if (isToolStart) {
+                    const startedAt = Date.now()
+                    lastMessage.extra_data = {
+                      ...lastMessage.extra_data,
+                      streaming_status: {
+                        status: 'tool_started',
+                        tool_name: toolName,
+                        changed_at: startedAt
+                      }
+                    }
+                  } else {
+                    statusToken =
+                      lastMessage.extra_data?.streaming_status?.changed_at
                   }
                 }
                 return newMessages
               })
+              if (
+                chunk.event === RunEvent.ToolCallCompleted ||
+                chunk.event === RunEvent.TeamToolCallCompleted
+              ) {
+                if (statusToken !== undefined) {
+                  scheduleWorkingStatus(statusToken)
+                }
+              }
             } else if (
               chunk.event === RunEvent.RunContent ||
               chunk.event === RunEvent.TeamRunContent
