@@ -4,9 +4,13 @@ import { render, screen } from '@testing-library/react'
 import Messages from '@/components/chat/ChatArea/Messages/Messages'
 import type { ChatMessage } from '@/types/os'
 
+(globalThis as any).React = React
+
 vi.mock('@/store', () => ({
-  useStore: (selector: (state: { isStreaming: boolean }) => unknown) =>
-    selector({ isStreaming: true })
+  useStore: (selector?: (state: { isStreaming: boolean; streamingErrorMessage: string | null }) => unknown) => {
+    const state = { isStreaming: true, streamingErrorMessage: null }
+    return typeof selector === 'function' ? selector(state) : state
+  }
 }))
 
 vi.mock('@/i18n/LocaleProvider', () => ({
@@ -49,7 +53,7 @@ describe('Messages working indicator', () => {
 
   it('shows Working... when streaming_status is working', () => {
     render(<Messages messages={baseMessages} />)
-    expect(screen.getByText('Working...')).toBeInTheDocument()
+    expect(screen.getByText('Working...')).toBeTruthy()
   })
 
   it('shows Tool Call Started label with tool name', () => {
@@ -65,6 +69,6 @@ describe('Messages working indicator', () => {
     render(<Messages messages={messages} />)
     expect(
       screen.getByText('Tool Call Started: search_faq')
-    ).toBeInTheDocument()
+    ).toBeTruthy()
   })
 })
