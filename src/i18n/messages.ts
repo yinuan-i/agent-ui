@@ -56,6 +56,7 @@ export const messages = {
     'chat.run_in_progress': '运行中',
     'chat.run_completed': '运行完成',
     'chat.tool_call_completed': '工具调用完成：',
+    'chat.tool_call_started': '工具调用开始：{tool}',
     'chat.tool': '工具',
     'sessions.no_session_found': '未找到会话',
     'sessions.endpoint_disconnected':
@@ -142,6 +143,7 @@ export const messages = {
     'chat.run_in_progress': 'Run In Progress',
     'chat.run_completed': 'Run Completed',
     'chat.tool_call_completed': 'Tool call completed: ',
+    'chat.tool_call_started': 'Tool Call Started: {tool}',
     'chat.tool': 'Tool',
     'sessions.no_session_found': 'No Session found',
     'sessions.endpoint_disconnected':
