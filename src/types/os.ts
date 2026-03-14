@@ -198,6 +198,12 @@ export interface ReasoningMessage {
   }
   created_at?: number
 }
+
+export type StreamingStatus = {
+  status: 'working' | 'tool_started'
+  tool_name?: string
+}
+
 export interface ChatMessage {
   role: 'user' | 'agent' | 'system' | 'tool'
   content: string
@@ -210,6 +216,7 @@ export interface ChatMessage {
     references?: ReferenceData[]
     run_started_at?: number
     run_completed_at?: number
+    streaming_status?: StreamingStatus
   }
   images?: ImageData[]
   videos?: VideoData[]

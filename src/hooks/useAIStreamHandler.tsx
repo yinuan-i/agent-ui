@@ -193,7 +193,8 @@ const useAIChatStreamHandler = () => {
                   lastMessage.extra_data = {
                     ...lastMessage.extra_data,
                     run_started_at:
-                      chunk.created_at ?? Math.floor(Date.now() / 1000)
+                      chunk.created_at ?? Math.floor(Date.now() / 1000),
+                    streaming_status: { status: 'working' }
                   }
                 }
                 return newMessages
@@ -229,10 +230,21 @@ const useAIChatStreamHandler = () => {
                 const newMessages = [...prevMessages]
                 const lastMessage = newMessages[newMessages.length - 1]
                 if (lastMessage && lastMessage.role === 'agent') {
+                  const toolName =
+                    chunk.tool?.tool_name ?? chunk.tools?.[0]?.tool_name
+                  const isToolStart =
+                    chunk.event === RunEvent.ToolCallStarted ||
+                    chunk.event === RunEvent.TeamToolCallStarted
                   lastMessage.tool_calls = processChunkToolCalls(
                     chunk,
                     lastMessage.tool_calls
                   )
+                  lastMessage.extra_data = {
+                    ...lastMessage.extra_data,
+                    streaming_status: isToolStart
+                      ? { status: 'tool_started', tool_name: toolName }
+                      : { status: 'working' }
+                  }
                 }
                 return newMessages
               })
