@@ -2,13 +2,14 @@ import type { ChatMessage } from '@/types/os'
 
 import { AgentMessage, UserMessage } from './MessageItem'
 import Tooltip from '@/components/ui/tooltip'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   type ToolCall,
   ReasoningStepProps,
   ReasoningProps,
   ReferenceData,
-  Reference
+  Reference,
+  StreamingStatus
 } from '@/types/os'
 import type { FC } from 'react'
 
@@ -47,6 +48,7 @@ interface ToolCallSummaryProps {
   isStreaming: boolean
   runStartedAt?: number
   runCompletedAt?: number
+  streamingStatus?: StreamingStatus
 }
 
 const ReferenceItem: FC<ReferenceItemProps> = ({ reference }) => (
@@ -80,7 +82,8 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
   toolCalls,
   isStreaming,
   runStartedAt,
-  runCompletedAt
+  runCompletedAt,
+  streamingStatus
 }) => {
   const { t } = useLocale()
   const [open, setOpen] = useState(false)
@@ -157,8 +160,15 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
     if (seconds < 10) return `${seconds.toFixed(1)} ${unit}`
     return `${Math.round(seconds)} ${unit}`
   }
+  const toolLabel = streamingStatus?.tool_name || t('chat.tool')
+  const toolCallStartedLabel = t('chat.tool_call_started').replace(
+    '{tool}',
+    toolLabel
+  )
   const timeLabel = isStreaming
-    ? t('chat.working')
+    ? streamingStatus?.status === 'tool_started'
+      ? toolCallStartedLabel
+      : t('chat.working')
     : `${t('chat.worked_for')} ${formatDuration(displaySeconds)}`
 
   const activeToolName = useMemo(() => {
@@ -181,11 +191,11 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
     })),
     {
       type: 'run' as const,
-      label: hasInProgressTools
-        ? t('chat.run_in_progress')
-        : t('chat.run_completed')
+      label: isStreaming ? t('chat.run_in_progress') : t('chat.run_completed')
     }
   ]
+  const showActiveToolName =
+    isStreaming && activeToolName && streamingStatus?.status !== 'tool_started'
 
   return (
     <div className="w-full max-w-[560px]">
@@ -199,7 +209,7 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
         )}
         <span className="font-medium">
           {timeLabel}
-          {isStreaming && activeToolName ? ` · ${activeToolName}` : ''}
+          {showActiveToolName ? ` · ${activeToolName}` : ''}
         </span>
         <Icon
           type="chevron-down"
@@ -330,8 +340,10 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
   const { t } = useLocale()
   const isStreaming = useStore((state) => state.isStreaming)
   const isStreamingMessage = isStreaming && isLastMessage
+  const streamingStatus = message.extra_data?.streaming_status
   const shouldShowToolSummary =
-    message.tool_calls && message.tool_calls.length > 0
+    Boolean(message.tool_calls && message.tool_calls.length > 0) ||
+    (isStreamingMessage && Boolean(streamingStatus))
 
   const toolHeader = shouldShowToolSummary ? (
     <div className="flex flex-col gap-4">
@@ -340,6 +352,7 @@ const AgentMessageWrapper = ({ message, isLastMessage }: MessageWrapperProps) =>
         isStreaming={isStreamingMessage}
         runStartedAt={message.extra_data?.run_started_at}
         runCompletedAt={message.extra_data?.run_completed_at}
+        streamingStatus={streamingStatus}
       />
       <div className="flex items-start gap-3">
         <Tooltip
