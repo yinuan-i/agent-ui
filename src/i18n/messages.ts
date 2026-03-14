@@ -59,6 +59,8 @@ export const messages = {
     'chat.tool_call_started': '工具调用开始：{tool}',
     'chat.tool_call_bar': '{count} 次工具调用',
     'chat.tool': '工具',
+    'chat.expand_message': '展开',
+    'chat.collapse_message': '收起',
     'sessions.no_session_found': '未找到会话',
     'sessions.endpoint_disconnected':
       '端点未连接。请连接端点以查看历史记录。',
@@ -147,6 +149,8 @@ export const messages = {
     'chat.tool_call_started': 'Tool Call Started: {tool}',
     'chat.tool_call_bar': '{count} TOOL CALLED',
     'chat.tool': 'Tool',
+    'chat.expand_message': 'Expand message',
+    'chat.collapse_message': 'Collapse message',
     'sessions.no_session_found': 'No Session found',
     'sessions.endpoint_disconnected':
       'Endpoint is not connected. Please connect the endpoint to see the history.',
