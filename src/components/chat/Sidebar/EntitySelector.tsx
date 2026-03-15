@@ -15,7 +15,7 @@ import { useEffect } from 'react'
 import useChatActions from '@/hooks/useChatActions'
 import { useLocale } from '@/i18n/LocaleProvider'
 
-export function EntitySelector({ variant = 'sidebar' }: { variant?: 'sidebar' | 'topbar' }) {
+export function EntitySelector() {
   const { t } = useLocale()
   const { mode, agents, teams, setMessages, setSelectedModel } = useStore()
 
@@ -38,10 +38,6 @@ export function EntitySelector({ variant = 'sidebar' }: { variant?: 'sidebar' | 
     mode === 'team'
       ? t('sidebar.no_teams_available')
       : t('sidebar.no_agents_available')
-  const triggerClassName =
-    variant === 'topbar'
-      ? 'h-8 min-w-[180px] rounded-full border border-border bg-background-secondary px-3 text-xs font-medium text-primary'
-      : 'h-9 w-full rounded-xl border border-border bg-background text-xs font-medium uppercase text-secondary'
 
   useEffect(() => {
     if (currentValue && currentEntities.length > 0) {
@@ -84,7 +80,7 @@ export function EntitySelector({ variant = 'sidebar' }: { variant?: 'sidebar' | 
   if (currentEntities.length === 0) {
     return (
       <Select disabled>
-        <SelectTrigger className={`${triggerClassName} opacity-50`}>
+        <SelectTrigger className="h-9 w-full rounded-xl border border-border bg-background text-xs font-medium uppercase text-secondary opacity-50">
           <SelectValue placeholder={emptyPlaceholder} />
         </SelectTrigger>
       </Select>
@@ -96,7 +92,7 @@ export function EntitySelector({ variant = 'sidebar' }: { variant?: 'sidebar' | 
       value={currentValue || ''}
       onValueChange={(value) => handleOnValueChange(value)}
     >
-      <SelectTrigger className={triggerClassName}>
+      <SelectTrigger className="h-9 w-full rounded-xl border border-border bg-background text-xs font-medium uppercase text-secondary">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="border border-border bg-background font-geist shadow-lg">
