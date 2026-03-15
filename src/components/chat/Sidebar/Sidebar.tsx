@@ -101,7 +101,7 @@ const Sidebar = ({
         <Icon
           type="sheet"
           size="xs"
-          className={`transform ${isCollapsed ? 'rotate-180' : 'rotate-0'}`}
+          className={`text-secondary transform ${isCollapsed ? 'rotate-180' : 'rotate-0'}`}
         />
       </motion.button>
       <motion.div
