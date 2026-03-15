@@ -313,7 +313,10 @@ const ToolCallSummary: FC<ToolCallSummaryProps> = ({
               <p className="text-xs uppercase text-secondary">
                 {t('chat.tool_result')}
               </p>
-              <pre className="mt-2 whitespace-pre-wrap rounded-lg border border-border bg-background-secondary p-3 text-xs text-primary">
+              <pre
+                data-testid="tool-result"
+                className="mt-2 max-h-64 overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-background-secondary p-3 text-xs text-primary"
+              >
                 {(() => {
                   const result =
                     selectedTool?.result ??

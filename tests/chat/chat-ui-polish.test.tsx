@@ -124,4 +124,36 @@ describe('chat ui polish', () => {
       delete (HTMLElement.prototype as { scrollHeight?: number }).scrollHeight
     }
   })
+
+  it('renders tool result block as scrollable', () => {
+    const toolMessages: ChatMessage[] = [
+      {
+        role: 'agent',
+        content: 'hello',
+        created_at: 1,
+        tool_calls: [
+          {
+            role: 'tool',
+            content: null,
+            tool_call_id: 'call_1',
+            tool_name: 'search_faq',
+            tool_args: { query: 'x' },
+            tool_call_error: false,
+            created_at: 2,
+            result: { ok: true }
+          }
+        ],
+        extra_data: {
+          run_started_at: 1,
+          run_completed_at: 2
+        }
+      }
+    ]
+
+    render(<Messages messages={toolMessages} />)
+    fireEvent.click(screen.getAllByRole('button', { name: /Worked for/ })[0])
+    fireEvent.click(screen.getByText('Tool call completed: search_faq'))
+    const result = screen.getByTestId('tool-result')
+    expect(result.className).toContain('overflow-auto')
+  })
 })

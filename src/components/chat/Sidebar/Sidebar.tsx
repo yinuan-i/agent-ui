@@ -226,6 +226,7 @@ const Sidebar = ({
 }) => {
   const { t } = useLocale()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(true)
   const { clearChat, focusChatInput, initialize } = useChatActions()
   const {
     messages,
@@ -290,41 +291,65 @@ const Sidebar = ({
         />
         {isMounted && (
           <>
-            <Endpoint />
-            <AuthToken hasEnvToken={hasEnvToken} envToken={envToken} />
-            {isEndpointActive && (
-              <>
-                <motion.div
-                  className="flex w-full flex-col items-start gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
-                >
-                  <div className="text-xs font-medium uppercase text-primary">
-                    {t('sidebar.mode')}
-                  </div>
-                  {isEndpointLoading ? (
-                    <div className="flex w-full flex-col gap-2">
-                      {Array.from({ length: 3 }).map((_, index) => (
-                        <Skeleton
-                          key={index}
-                          className="h-9 w-full rounded-xl"
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <>
-                      <ModeSelector />
-                      <EntitySelector />
-                      {selectedModel && (agentId || teamId) && (
-                        <ModelDisplay model={selectedModel} />
-                      )}
-                    </>
-                  )}
-                </motion.div>
-                <Sessions />
-              </>
-            )}
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => setIsSettingsOpen((prev) => !prev)}
+                className="flex w-full items-center justify-between rounded-xl border border-border bg-background px-3 py-2 text-xs font-medium uppercase text-primary transition-colors hover:bg-surface-hover"
+              >
+                <span>{t('sidebar.settings')}</span>
+                <Icon
+                  type="chevron-down"
+                  size="xs"
+                  className={`text-secondary transition-transform ${isSettingsOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+              <AnimatePresence initial={false}>
+                {isSettingsOpen && (
+                  <motion.div
+                    className="flex flex-col gap-5 overflow-hidden"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  >
+                    <Endpoint />
+                    <AuthToken hasEnvToken={hasEnvToken} envToken={envToken} />
+                    {isEndpointActive && (
+                      <motion.div
+                        className="flex w-full flex-col items-start gap-2"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, ease: 'easeInOut' }}
+                      >
+                        <div className="text-xs font-medium uppercase text-primary">
+                          {t('sidebar.mode')}
+                        </div>
+                        {isEndpointLoading ? (
+                          <div className="flex w-full flex-col gap-2">
+                            {Array.from({ length: 3 }).map((_, index) => (
+                              <Skeleton
+                                key={index}
+                                className="h-9 w-full rounded-xl"
+                              />
+                            ))}
+                          </div>
+                        ) : (
+                          <>
+                            <ModeSelector />
+                            <EntitySelector />
+                            {selectedModel && (agentId || teamId) && (
+                              <ModelDisplay model={selectedModel} />
+                            )}
+                          </>
+                        )}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            {isEndpointActive && <Sessions />}
           </>
         )}
       </motion.div>
