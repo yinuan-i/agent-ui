@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import Sidebar from '@/components/chat/Sidebar/Sidebar'
 
 ;(globalThis as any).React = React
@@ -58,6 +58,7 @@ vi.mock('@/i18n/LocaleProvider', () => ({
         'sidebar.agentos': 'AgentOS',
         'sidebar.auth_token': 'Auth Token',
         'sidebar.mode': 'Mode',
+        'sidebar.theme': 'Theme',
         'sidebar.new_chat': 'New Chat',
         'sidebar.mode_agent': 'Agent',
         'sidebar.mode_team': 'Team',
@@ -72,22 +73,14 @@ vi.mock('@/i18n/LocaleProvider', () => ({
 }))
 
 describe('sidebar settings', () => {
-  it('toggles settings group', async () => {
+  it('opens settings popover and shows settings sections', async () => {
     render(<Sidebar />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Settings' }))
 
     expect(await screen.findByText('AgentOS')).toBeTruthy()
     expect(screen.getByText('Auth Token')).toBeTruthy()
     expect(screen.getByText('Mode')).toBeTruthy()
-
-    fireEvent.click(screen.getByRole('button', { name: 'Settings' }))
-
-    await waitFor(() => {
-      expect(screen.queryByText('AgentOS')).toBeNull()
-      expect(screen.queryByText('Auth Token')).toBeNull()
-      expect(screen.queryByText('Mode')).toBeNull()
-    })
-
-    fireEvent.click(screen.getByRole('button', { name: 'Settings' }))
-    expect(await screen.findByText('AgentOS')).toBeTruthy()
+    expect(screen.getByText('Theme')).toBeTruthy()
   })
 })
