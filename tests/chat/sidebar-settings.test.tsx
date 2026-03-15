@@ -80,7 +80,7 @@ describe('sidebar settings', () => {
 
     expect(await screen.findByText('AgentOS')).toBeTruthy()
     expect(screen.getByText('Auth Token')).toBeTruthy()
-    expect(screen.getByText('Mode')).toBeTruthy()
+    expect(screen.queryByText('Mode')).toBeNull()
     expect(screen.getByText('Theme')).toBeTruthy()
   })
 })
