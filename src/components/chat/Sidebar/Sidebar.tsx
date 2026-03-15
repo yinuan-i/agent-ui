@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import Icon from '@/components/ui/icon'
 import Sessions from './Sessions'
-import { useQueryState } from 'nuqs'
 import { useLocale } from '@/i18n/LocaleProvider'
 import SettingsPopover from './SettingsPopover'
 
@@ -62,14 +61,10 @@ const Sidebar = ({
     messages,
     selectedEndpoint,
     isEndpointActive,
-    selectedModel,
     hydrated,
-    isEndpointLoading,
     mode
   } = useStore()
   const [isMounted, setIsMounted] = useState(false)
-  const [agentId] = useQueryState('agent')
-  const [teamId] = useQueryState('team')
 
   useEffect(() => {
     setIsMounted(true)
@@ -127,11 +122,6 @@ const Sidebar = ({
               <SettingsPopover
                 hasEnvToken={hasEnvToken}
                 envToken={envToken}
-                isEndpointActive={isEndpointActive}
-                isEndpointLoading={isEndpointLoading}
-                selectedModel={selectedModel}
-                agentId={agentId}
-                teamId={teamId}
               />
             </div>
           </div>

@@ -4,35 +4,17 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 
 import { useLocale } from '@/i18n/LocaleProvider'
 import Icon from '@/components/ui/icon'
-import { Skeleton } from '@/components/ui/skeleton'
-
 import Endpoint from './Endpoint'
 import AuthToken from './AuthToken'
 import ThemeSelector from './ThemeSelector'
-import { ModeSelector } from './ModeSelector'
-import { EntitySelector } from './EntitySelector'
-import ModelDisplay from './ModelDisplay'
 import LanguageToggle from './LanguageToggle'
 
 interface SettingsPopoverProps {
   hasEnvToken?: boolean
   envToken?: string
-  isEndpointActive: boolean
-  isEndpointLoading: boolean
-  selectedModel: string
-  agentId: string | null
-  teamId: string | null
 }
 
-const SettingsPopover = ({
-  hasEnvToken,
-  envToken,
-  isEndpointActive,
-  isEndpointLoading,
-  selectedModel,
-  agentId,
-  teamId
-}: SettingsPopoverProps) => {
+const SettingsPopover = ({ hasEnvToken, envToken }: SettingsPopoverProps) => {
   const { t } = useLocale()
 
   return (
@@ -61,28 +43,6 @@ const SettingsPopover = ({
             <Endpoint />
             <AuthToken hasEnvToken={hasEnvToken} envToken={envToken} />
             <ThemeSelector />
-            {isEndpointActive && (
-              <div className="flex w-full flex-col items-start gap-2">
-                <div className="text-xs font-medium uppercase text-primary">
-                  {t('sidebar.mode')}
-                </div>
-                {isEndpointLoading ? (
-                  <div className="flex w-full flex-col gap-2">
-                    {Array.from({ length: 3 }).map((_, index) => (
-                      <Skeleton key={index} className="h-9 w-full rounded-xl" />
-                    ))}
-                  </div>
-                ) : (
-                  <>
-                    <ModeSelector />
-                    <EntitySelector />
-                    {selectedModel && (agentId || teamId) && (
-                      <ModelDisplay model={selectedModel} />
-                    )}
-                  </>
-                )}
-              </div>
-            )}
           </div>
           <DialogPrimitive.Close className="absolute right-3 top-3 rounded-md opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
             <Icon type="x" size="xs" />

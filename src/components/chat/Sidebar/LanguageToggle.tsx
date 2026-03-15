@@ -21,7 +21,7 @@ const LanguageToggle = () => {
           className={cn(
             'flex-1 rounded-lg px-2 py-1 text-xs font-medium transition-colors',
             locale === option.value
-              ? 'bg-primary text-primary-foreground'
+              ? 'bg-primary text-primary-foreground night-outline'
               : 'text-secondary hover:bg-surface-hover'
           )}
         >

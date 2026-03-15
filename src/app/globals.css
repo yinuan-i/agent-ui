@@ -122,6 +122,19 @@
     color-scheme: dark;
   }
 
+  [data-theme='night'] .night-outline {
+    background-color: var(--main-surface-secondary);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+  }
+
+  [data-theme='night'] .night-outline-strong {
+    background-color: transparent;
+    border: 1px solid var(--border-medium);
+    box-shadow: none;
+    color: var(--text-primary);
+  }
+
   html {
     color-scheme: light;
   }
