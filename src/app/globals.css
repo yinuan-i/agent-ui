@@ -96,6 +96,32 @@
       SF Mono, Menlo, Consolas, 'Liberation Mono', monospace;
   }
 
+  [data-theme='night'] {
+    --main-surface-background: #0a0a0bf2;
+    --main-surface-primary: #0b0b0d;
+    --main-surface-primary-inverse: #f5f5f5;
+    --main-surface-secondary: #101012;
+    --main-surface-secondary-selected: #ffffff14;
+    --main-surface-tertiary: #16161a;
+    --text-primary: #e8e8ea;
+    --text-secondary: #b8b8bf;
+    --text-tertiary: #8a8a95;
+    --text-placeholder: #9a9aa3;
+    --border-xlight: #ffffff0a;
+    --border-light: #ffffff14;
+    --border-medium: #ffffff1f;
+    --border-heavy: #ffffff2b;
+    --border-xheavy: #ffffff33;
+    --border-sharp: #ffffff0d;
+    --icon-secondary: #a0a0aa;
+    --surface-hover: #ffffff12;
+    --link: #7fb2ff;
+    --link-hover: #a9c9ff;
+    --selection: #4f8bff;
+    --scrollbar-color: #ffffff1a;
+    color-scheme: dark;
+  }
+
   html {
     color-scheme: light;
   }
